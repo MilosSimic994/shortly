@@ -9,21 +9,6 @@ const AppProvider = ({ children }) => {
   const [shortURL, setShortURL] = useState([{ old: "", new: "" }]);
   const [searchURL, setSearchURL] = useState("");
 
-  const fetchShortUrl = async () => {
-    try {
-      const res = await fetch(`${url}${searchURL} `);
-      const data = await res.json();
-      //create new object
-      setShortURL([
-        ...shortURL,
-        { new: data.result.full_short_link, old: searchURL },
-      ]);
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  };
-
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -35,6 +20,20 @@ const AppProvider = ({ children }) => {
   };
   //call fetch if search change, on submit
   useEffect(() => {
+    const fetchShortUrl = async () => {
+      try {
+        const res = await fetch(`${url}${searchURL} `);
+        const data = await res.json();
+        //create new object
+        setShortURL([
+          ...shortURL,
+          { new: data.result.full_short_link, old: searchURL },
+        ]);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    };
     if (searchURL) {
       setSearchURL("");
       fetchShortUrl();
