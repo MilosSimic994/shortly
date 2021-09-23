@@ -1,14 +1,26 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useGlobalContext } from "../Context";
 
 const ShortUrl = () => {
   const { shortURL } = useGlobalContext();
   const copied = useRef("");
-  const [isCopied, setIsCopied] = useState(false);
 
-  const copyHandler = () => {
-    navigator.clipboard.writeText(copied.current.textContent);
-    setIsCopied(true);
+  const copyHandler = (e) => {
+    navigator.clipboard.writeText(
+      e.currentTarget.previousElementSibling.textContent
+    );
+    console.log(e.currentTarget.previousElementSibling.textContent);
+
+    e.target.classList.toggle("copied");
+    setTimeout(() => {
+      e.target.classList.remove("copied");
+      e.target.innerText = "Copy";
+    }, 3000);
+    if (e.target.classList.contains("copied")) {
+      e.target.innerText = "Copied";
+    } else {
+      e.target.innerText = "Copy";
+    }
   };
 
   console.log(shortURL);
@@ -22,11 +34,7 @@ const ShortUrl = () => {
           <div key={index} className="link-control">
             <li>{item.old}</li>
             <li ref={copied}>{item.new}</li>
-            <button
-              onClick={copyHandler}
-              className={isCopied ? `copied` : null}>
-              {isCopied ? `copied!` : `copy`}
-            </button>
+            <button onClick={copyHandler}>Copy</button>
           </div>
         );
       })}
